@@ -9,6 +9,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponse
 from django.views.decorators.cache import cache_page
+from django.core import serializers
 
 from common.utils.extend_json_encoder import ExtendJSONEncoder
 from common.utils.convert import Convert
@@ -356,10 +357,16 @@ def describe(request):
     """获取表结构"""
     instance_name = request.POST.get("instance_name")
     try:
+        #print("Instance_name ", instance_name)
+        #print(Instance.objects.all())
         instance = Instance.objects.get(instance_name=instance_name)
+
     except Instance.DoesNotExist:
-        result = {"status": 1, "msg": "实例不存在", "data": []}
-        return HttpResponse(json.dumps(result), content_type="application/json")
+        qs = Instance.objects.all()
+        qs_json = serializers.serialize('json', qs)
+        return HttpResponse(qs_json, content_type='application/json')
+        # result = {"status": 1, "msg": "实例不存在", "data": [Instance.objects.all()]}
+        # return HttpResponse(json.dumps(result), content_type="application/json")
     db_name = request.POST.get("db_name")
     schema_name = request.POST.get("schema_name")
     tb_name = request.POST.get("tb_name")

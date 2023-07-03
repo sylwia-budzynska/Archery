@@ -23,12 +23,4 @@ echo 启动Django Q cluster
 supervisord -c /etc/supervisord.conf
 
 echo 启动服务
-gunicorn -w 4 -b 127.0.0.1:8888 --timeout 600 archery.wsgi:application
-
-
-
-
-
-
-
-
+gunicorn -w 1 -b 127.0.0.1:8888 --timeout 600 archery.wsgi:application
